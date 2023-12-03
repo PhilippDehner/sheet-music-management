@@ -1,0 +1,37 @@
+services:
+
+  database:
+    image: postgres:latest
+    hostname: database
+    restart: always
+    env_file:
+      - ./config/database.env
+    user: 'postgres'
+    ports:
+      - 3101:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    restart: always
+    ports:
+      - 3102:3000
+    volumes:
+      - ./config/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./config/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./volumes/grafana/data:/var/lib/grafana:rw
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    ports:
+      - 3103:80
+    env_file:
+      - ./config/pgadmin.env
+    volumes:
+      - ./volumes/pgadmin:/var/lib/pgadmin
+
+volumes:
+  db-data:
+   
